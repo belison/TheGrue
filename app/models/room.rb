@@ -26,6 +26,14 @@ class Room
     @portal
   end
 
+  def has_gem?
+    @has_gem
+  end
+
+  def has_grue?
+    @has_grue
+  end
+
   def move_from
     @has_player = false
   end
@@ -35,10 +43,6 @@ class Room
   end
 
   def move_grue_to
-    if (@has_player)
-      @events.push("You're dead! The Grue ate you")
-    end
-
     @has_grue = true
   end
 
@@ -53,12 +57,22 @@ class Room
     @has_player = true
   end
 
+  def pick_up_gem
+    @has_gem = false
+  end
+
   def print_events
     @events.each do |e|
       puts e
     end
 
     @events = []
+  end
+
+  def random_valid_direction
+    num = Random.rand(@map.size)
+    key = @map.keys[num]
+    @map[key][:direction]
   end
 
   def shortest_direction_to_room(room)
