@@ -1,0 +1,55 @@
+rooms:
+  vermilion:
+    east: ochre
+    south: aquamarine
+    west:
+    north:
+
+  ochre:
+    east: chartreuse
+    south: ochre
+    west:
+    north: vermilion
+
+  chartreuse:
+    east:
+    south: emerald
+    west:
+    north: ochre
+
+  emerald:
+    east: lavender
+    south: aquamarine
+    west: cobalt
+    north:
+
+  lavender:
+    east: chartreuse
+    south:
+    west: burnt_sienna
+    north:
+
+  burnt_sienna:
+    east: lavender
+    south:
+    west:
+    north: emerald
+
+  violet:
+    east: burnt_sienna
+    south: burnt_sienna
+    west: chartreuse
+    north:
+
+  aquamarine:
+    east:
+    south: violet
+    west: cobalt
+    north:
+
+  cobalt:
+    east:
+    south: burnt_sienna
+    west: vermilion
+    north:
+    teleport: true

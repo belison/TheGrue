@@ -1,15 +1,17 @@
 class Room
 
-  attr_accessor :name
+  attr_accessor :name, :map
 
   def initialize(name, config)
+    @config = config
     @events = []
+    @map = {}
     @name = name
     @portal = config["teleport"] ? true : false
-    @config = config
-    @has_player = false
-    @has_grue = false
+
     @has_gem = false
+    @has_grue = false
+    @has_player = false
   end
 
   def door_destination(direction)
@@ -59,7 +61,15 @@ class Room
     @events = []
   end
 
+  def shortest_direction_to_room(room)
+    @map[room.name][:direction]
+  end
+
   def to_s
     @name.gsub(/_/, ' ').capitalize
+  end
+
+  def valid_move_direction?(direction)
+    !@config[direction].blank?
   end
 end
