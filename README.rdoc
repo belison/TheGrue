@@ -2,6 +2,10 @@
 
 This is a demo repo to solve an abstract game puzzle involving a configurable map and a user that is able to navigate the map Zork style and a monster that hunts them.
 
+Rails isn't really needed here, I use a couple of the active support helpers so its just handy to start with that.  Removed most of the Railties like active remote.
+
+From the write up it seemed like avoiding a db was preferable, perhaps so we don't need to deal with migrations?  Just used a yml to configure, found in the config folder.  A different yml is used for the tests so that if changes are made the tests don't blow up
+
 
 == Running the example
 
