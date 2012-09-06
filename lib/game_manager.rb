@@ -5,7 +5,7 @@ class GameManager
     'e' => 'east',
     'w' => 'west'
   }
-  COMMANDS = ['exit', 'pick', DIRECTIONS.keys].flatten
+  COMMANDS = ['exit', DIRECTIONS.keys].flatten
   REST_TURN = 4
 
   def initialize
@@ -13,31 +13,40 @@ class GameManager
     init_rooms
     randomly_place_player
     randomly_place_grue
+  end
 
+  def begin_input_loop
     puts 'Welcome to BasicQuest'
-    begin_input_loop
+
+    while @playing
+      puts "\n\n"
+
+      if time_to_rest?
+        puts "You are resting, the Grue moves"
+        grue_hunts
+      else
+        puts @current_room.print_events if @current_room.has_events?
+        puts "You are in the #{@current_room.to_s} room, what now? (#{COMMANDS.join(', ')})"
+        input = gets.chomp.downcase
+        if input_invalid?(input)
+          puts "Enter a valid command"
+          next
+        end
+
+        process_command(input)
+      end
+
+      @moves += 1
+    end
   end
 
   private
 
-    def begin_input_loop
-      while @playing
-        if time_to_rest?
-          puts "You are resting, the Grue moves"
-          grue_hunts
-        else
-          puts "You are in the #{@current_room.to_s} room, what now? (#{COMMANDS.join(', ')})"
-          puts @current_room.print_events if @current_room.has_events?
-          input = gets.chomp.downcase
-          if input_invalid?(input)
-            puts "Enter a valid command"
-            next
-          end
-
-          process_command(input)
-        end
-
-        @moves += 1
+    def check_winning_condition
+      if player_wins?
+        puts "*** You won! ***"
+        reset_game
+        randomly_place_player
       end
     end
 
@@ -67,23 +76,35 @@ class GameManager
       return !COMMANDS.include?(input)
     end
 
-    def move(input)
-      cardinal = translate_to_cardinal(input)
-      destination = @current_room.door_destination(cardinal)
-      new_room = @current_room
+    def move(direction)
+      destination = @current_room.door_destination(direction)
 
       if destination
         new_room = get_room_by_name(destination)
         @current_room.move_from
-      end
 
-      new_room
+        new_room.move_to
+        @current_room = new_room
+
+        if @current_room.has_grue?
+          @gem_count += 1
+          puts "You found a gem! You now have #{@gem_count} gem(s)"
+          move_grue(@grue_room.random_valid_direction)
+        end
+
+        check_winning_condition
+      else
+        puts 'The door was locked'
+      end
     end
 
+    ##
+    # TODO it is possible that the grue would flee back to the same room
+    # Ochre for example and then eat the player
     def move_grue(direction)
       next_grue_room = @grue_room.door_destination(direction)
 
-      @grue_room.move_from
+      @grue_room.move_grue_from
       @grue_room = get_room_by_name(next_grue_room)
       @grue_room.move_grue_to
 
@@ -92,6 +113,20 @@ class GameManager
         @current_room.move_from
         reset_game
         randomly_place_player
+      end
+    end
+
+    def player_wins?
+      @gem_count >= 5 && @current_room.has_portal?
+    end
+
+    def process_command(input)
+      if input == 'exit'
+        @playing = false
+        return
+      else
+        cardinal = translate_to_cardinal(input)
+        move(cardinal)
       end
     end
 
@@ -106,28 +141,6 @@ class GameManager
       @current_room.move_to
     end
 
-    def process_command(input)
-      if input == 'exit'
-        @playing = false
-        return
-      elsif input == 'pick'
-        if @current_room.has_gem?
-          @gem_count += 1
-          @current_room.pick_up_gem
-          puts "You now have #{@gem_count} gem(s)"
-        else
-          puts "You fumble around and find a bit of lint"
-        end
-      else
-        @current_room = move(input)
-        @current_room.move_to
-
-        if @current_room.has_grue?
-          move_grue(@grue_room.random_valid_direction)
-        end
-      end
-    end
-
     def reset_game
       @gem_count = 0
       @moves = 1
@@ -135,7 +148,7 @@ class GameManager
     end
 
     def time_to_rest?
-      @moves > 0 && (@moves % REST_TURN == 0)
+      @moves % REST_TURN == 0
     end
 
     def translate_to_cardinal(abbreviation)

@@ -7,9 +7,8 @@ class Room
     @events = []
     @map = {}
     @name = name
-    @portal = config["teleport"] ? true : false
 
-    @has_gem = false
+    @has_portal = config["teleport"] ? true : false
     @has_grue = false
     @has_player = false
   end
@@ -26,12 +25,12 @@ class Room
     @portal
   end
 
-  def has_gem?
-    @has_gem
-  end
-
   def has_grue?
     @has_grue
+  end
+
+  def has_portal?
+    @has_portal
   end
 
   def move_from
@@ -47,18 +46,11 @@ class Room
   end
 
   def move_to
-    if (@has_player)
-      @events.push('The door was locked')
-    elsif (@has_grue)
-      @events.push('There is a gem on the floor')
-      @has_gem = true
+    if has_portal?
+      @events.push('There is a warm blue glow on the floor')
     end
 
     @has_player = true
-  end
-
-  def pick_up_gem
-    @has_gem = false
   end
 
   def print_events

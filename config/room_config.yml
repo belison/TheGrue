@@ -51,5 +51,5 @@ rooms:
     east:
     south: burnt_sienna
     west: vermilion
-    north:
+    north: vermilion
     teleport: true

@@ -19,9 +19,9 @@ describe Calculator do
     context 'from the perspective of Cobalt' do
       let(:cobalt) { subject.__send__(:room_by_name, 'cobalt') }
 
-      it 'shortest direction to Aquamarine should be west' do
-        aquamarine = subject.__send__(:room_by_name, 'aquamarine')
-        cobalt.shortest_direction_to_room(aquamarine).should eq 'west'
+      it 'shortest direction to Emerald should be south' do
+        emerald = subject.__send__(:room_by_name, 'emerald')
+        cobalt.shortest_direction_to_room(emerald).should eq 'south'
       end
 
       it 'shortest direction to Lavender should be south' do

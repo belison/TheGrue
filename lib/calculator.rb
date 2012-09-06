@@ -23,6 +23,7 @@ class Calculator
 
     ##
     # TODO make this more efficient
+    #
     def room_by_name(name)
       @rooms.each do |room|
         return room if room.name == name
@@ -61,6 +62,9 @@ class Calculator
       return best
     end
 
+    ##
+    # TODO dry up the duplication in the recursive method with this one
+    #
     def shortest_direction_to_room(start, finish)
       best = 100
       result = nil
