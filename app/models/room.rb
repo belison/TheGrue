@@ -21,10 +21,6 @@ class Room
     !@events.empty?
   end
 
-  def has_exit?
-    @portal
-  end
-
   def has_grue?
     @has_grue
   end
