@@ -23,6 +23,8 @@ class Calculator
 
     ##
     # TODO make this more efficient
+    # If a room has already found its shortest path to another
+    # could look it up in the existing map rather than running again
     #
     def room_by_name(name)
       @rooms.each do |room|
