@@ -101,6 +101,7 @@ class GameManager
 
         if @current_room.has_grue?
           @gem_count += 1
+          puts "A blurry flash zipped out of the room as you enter, was it a Grue?"
           puts "You found a gem! You now have #{@gem_count} gem(s)"
           move_grue(@grue_room.random_valid_direction)
         end
