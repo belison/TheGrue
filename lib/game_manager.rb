@@ -24,6 +24,7 @@ class GameManager
       if time_to_rest?
         puts "You are resting, the Grue moves"
         grue_hunts
+        next if check_losing_condition
       else
         puts @current_room.print_events if @current_room.has_events?
         puts "You are in the #{@current_room.to_s} room, what now? (#{COMMANDS.join(', ')})"
@@ -41,6 +42,18 @@ class GameManager
   end
 
   private
+
+    def check_losing_condition
+      loses = player_loses?
+      if loses
+        puts "You're dead! The Grue ate you"
+        @current_room.move_from
+        reset_game
+        randomly_place_player
+      end
+
+      loses
+    end
 
     def check_winning_condition
       if player_wins?
@@ -107,17 +120,14 @@ class GameManager
       @grue_room.move_grue_from
       @grue_room = get_room_by_name(next_grue_room)
       @grue_room.move_grue_to
-
-      if @grue_room == @current_room
-        puts "You're dead! The Grue ate you"
-        @current_room.move_from
-        reset_game
-        randomly_place_player
-      end
     end
 
     def player_wins?
       @gem_count >= 5 && @current_room.has_portal?
+    end
+
+    def player_loses?
+      @grue_room == @current_room
     end
 
     def process_command(input)
